@@ -1,17 +1,23 @@
-# Cast Calc — RuneLite Plugin for OSRS
+# Cast Calc - RuneLite Plugin for OSRS
 
 A RuneLite side-panel plugin that shows the GP cost of every spell cast across all four spellbooks, using live Grand Exchange prices. Includes a full profit & loss calculator for utility spells and rune-saving gear detection.
+
+---
 
 ## Features
 
 ### Spell Cost Calculator
-- **All 4 spellbooks**: Standard, Ancient, Lunar, and Arceuus — 140+ spells
+- **All 4 spellbooks**: Standard, Ancient, Lunar, and Arceuus - 182 spells
 - **Live GE prices**: Rune costs pulled from the Grand Exchange, refreshed every 5 minutes (or manually via the Refresh button)
 - **Search & filter**: Find spells by name, spellbook, category, or toggle "P&L spells only"
 - **Sort**: By name, cost (ascending/descending), or level (ascending/descending)
-- **Bulk costs**: See cost for 100 / 1,000 / 10,000 casts at a glance
 - **Rune breakdown**: Expand any spell to see per-rune cost details with free-rune and save-chance labels
 - **Spell count**: Live count of how many spells match your current filters
+
+### Magic Goal Calculator
+- **Casts mode**: Enter a cast count to see total cost and Magic XP gained
+- **Level mode**: Choose a target level or XP total to calculate casts and GP required
+- **Cost mode**: Enter a GP budget to see affordable casts and resulting XP
 
 ### Rune-Saving Gear Detection
 Automatically detects your equipped gear and adjusts all costs in real time:
@@ -49,6 +55,8 @@ For utility spells, click to see whether casting is profitable:
 - Shows cost per cast (head GE price + rune cost) and prayer XP gained
 - Covers goblin through dragon heads
 
+---
+
 ## Installation
 
 ### Option A: RuneLite Plugin Hub (Recommended)
@@ -60,8 +68,9 @@ Once approved, search for **"Cast Calc"** in the RuneLite Plugin Hub.
    ```bash
    ./gradlew build
    ```
-3. The compiled JAR will be in `build/libs/`
-4. Place the JAR in your RuneLite plugins directory
+3. Run the development client with `./gradlew run`
+
+---
 
 ## Configuration
 
@@ -74,18 +83,24 @@ Open RuneLite Settings → Cast Calc:
 | Default Spellbook Filter | All | Which spellbook to show on panel open |
 | Show Level Requirement | ON | Display magic level next to each spell |
 | Highlight Profitable | ON | Green P&L label on utility spells with presets |
+| Expanded Card Text Size | Small | Text size used inside expanded spell details |
+
+---
 
 ## Project Structure
 
 ```
 src/main/java/com/castcalc/
-├── CastCalcPlugin.java       # Entry point — registers panel, handles events
+├── CastCalcPlugin.java       # Entry point - registers panel, handles events
 ├── CastCalcConfig.java        # User settings (gear toggle, filters, display prefs)
 ├── CastCalcPanel.java         # Full Swing side panel UI
-├── CostCalculator.java        # Cost engine — spell costs, alch P&L, conversion P&L
-├── ConversionPreset.java      # Pre-built input→output mappings for P&L spells
-├── SpellDatabase.java         # All 140+ spells with rune requirements
+├── CastCalcStyle.java         # Shared UI colors, fonts, spacing, and layout constants
+├── CostCalculator.java        # Cost engine - spell costs, alch P&L, conversion P&L
+├── ConversionPreset.java      # Pre-built input-to-output mappings for P&L spells
+├── SpellDatabase.java         # Spell definitions and rune requirements
 ├── SpellData.java             # Spell data model
+├── MagicXpTable.java          # OSRS Magic XP and level calculations
+├── CalcMode.java              # Goal calculator input modes
 ├── Spellbook.java             # Spellbook enum (Standard, Ancient, Lunar, Arceuus)
 ├── SpellCategory.java         # Category enum (Combat, Teleport, Utility, Curse, Support)
 ├── Rune.java                  # Rune enum with OSRS item IDs
@@ -93,14 +108,18 @@ src/main/java/com/castcalc/
 └── RuneSavingGear.java        # Gear detection & rune-saving probability math
 ```
 
+---
+
 ## API Notes & Limitations
 
 - **GE Prices**: Fetched via RuneLite's `ItemManager.getItemPrice()` which uses the OSRS GE API. Prices may lag ~5 minutes behind real-time.
-- **High Alch Values**: Retrieved from `ItemComposition.getHaPrice()` — these are fixed game values, not GE-based.
+- **High Alch Values**: Retrieved from `ItemComposition.getHaPrice()` - these are fixed game values, not GE-based.
 - **Item Search**: Uses `ItemManager.search()` for the alchemy calculator. Results capped at 8 per query for UI performance.
 - **Gear Detection**: Reads the equipment container via `InventoryID.EQUIPMENT`. Updates automatically on equipment change events.
 - **Reanimation Spells**: Shown as cost-per-cast rather than profit, since the "output" is prayer XP (not a sellable item). The cost = ensouled head GE price + rune cost.
 - **Superglass Make**: Uses an average of ~10 molten glass output per cast. Actual output varies (1.3x the input amount, rounded).
+
+---
 
 ## Adding New Spells or Presets
 
@@ -118,6 +137,8 @@ register("Spell Name",
         input(SECOND_INPUT_ID, "Second input", qty))  // multi-input supported
 );
 ```
+
+---
 
 ## License
 
