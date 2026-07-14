@@ -14,7 +14,7 @@ This checklist follows the official RuneLite Plugin Hub submission process.
 - [x] Build and test the plugin locally.
 - [ ] Add or approve a root `icon.png` no larger than 48 by 72 pixels.
 - [x] Commit the final repository state.
-- [ ] Push the final commit to GitHub.
+- [x] Push the final commit to GitHub.
 
 ## Plugin Hub submission
 
