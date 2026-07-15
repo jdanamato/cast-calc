@@ -4,7 +4,7 @@ This checklist follows the official RuneLite Plugin Hub submission process.
 
 ## Repository preparation
 
-- [ ] Make the GitHub repository public (it is not currently publicly accessible).
+- [x] Make the GitHub repository public.
 - [x] Provide `runelite-plugin.properties` with display name, author,
   description, tags, plugin class, and standard build type.
 - [x] Keep `runeLiteVersion` set to `latest.release`.
@@ -18,15 +18,16 @@ This checklist follows the official RuneLite Plugin Hub submission process.
 
 ## Plugin Hub submission
 
-- [ ] Fork `runelite/plugin-hub` on GitHub.
-- [ ] Add a marker file named `plugins/cast-calc` containing:
+- [x] Fork `runelite/plugin-hub` on GitHub.
+- [x] Add a marker file named `plugins/cast-calc` containing:
 
   ```properties
   repository=https://github.com/jdanamato/cast-calc.git
-  commit=FINAL_40_CHARACTER_COMMIT_HASH
+  commit=cc5e8bce25437d2d973a1494600b5a53e56971e0
   ```
 
-- [ ] Open a pull request from the fork to `runelite/plugin-hub`.
+- [x] Open a pull request from the fork to `runelite/plugin-hub`:
+  https://github.com/runelite/plugin-hub/pull/13834
 - [ ] Confirm all Plugin Hub checks pass.
 - [ ] Address reviewer feedback, updating the marker commit when necessary.
 - [ ] After acceptance, verify Cast Calc appears in the RuneLite Plugin Hub.
