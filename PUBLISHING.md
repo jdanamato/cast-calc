@@ -28,7 +28,7 @@ This checklist follows the official RuneLite Plugin Hub submission process.
 
 - [x] Open a pull request from the fork to `runelite/plugin-hub`:
   https://github.com/runelite/plugin-hub/pull/13834
-- [ ] Confirm all Plugin Hub checks pass.
+- [x] Confirm all Plugin Hub checks pass.
 - [ ] Address reviewer feedback, updating the marker commit when necessary.
 - [ ] After acceptance, verify Cast Calc appears in the RuneLite Plugin Hub.
 
