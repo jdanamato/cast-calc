@@ -12,7 +12,7 @@ This checklist follows the official RuneLite Plugin Hub submission process.
 - [x] Use the BSD 2-Clause license.
 - [x] Avoid dependencies outside the Plugin Hub standard build template.
 - [x] Build and test the plugin locally.
-- [ ] Add or approve a root `icon.png` no larger than 48 by 72 pixels.
+- [x] Add or approve a root `icon.png` no larger than 48 by 72 pixels.
 - [x] Commit the final repository state.
 - [x] Push the final commit to GitHub.
 
