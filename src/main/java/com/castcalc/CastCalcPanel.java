@@ -1403,7 +1403,7 @@ public class CastCalcPanel extends PluginPanel
 
         for (ItemSearchRow r : rows)
         {
-            int gePrice = calculator.getItemPrice(r.itemId);
+            long gePrice = calculator.getItemPrice(r.itemId);
             long profit = r.alchValue - gePrice - runeCost;
 
             String details = "GE: " + formatGp(gePrice) + " - " +
@@ -1476,7 +1476,7 @@ public class CastCalcPanel extends PluginPanel
         // Input rows
         for (ConversionPreset.ItemInput input : preset.getInputs())
         {
-            long itemPrice = (long) calculator.getItemPrice(input.getItemId()) * input.getQuantity();
+            long itemPrice = calculator.getItemPrice(input.getItemId()) * input.getQuantity();
             JLabel itemIcon = buildItemIconLabel(input.getItemId());
             addItemLineItem(card, itemIcon, input.getName(), input.getQuantity(), formatGp(itemPrice) + " gp", TEXT_MUTED);
         }

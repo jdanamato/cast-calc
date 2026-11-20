@@ -24,7 +24,7 @@ public class CostCalculator
     private final ItemManager itemManager;
 
     // Thread-safe price cache, populated on the client thread
-    private final Map<Integer, Integer> priceCache = new ConcurrentHashMap<>();
+    private final Map<Integer, Long> priceCache = new ConcurrentHashMap<>();
 
     public CostCalculator(Client client, ItemManager itemManager)
     {
@@ -47,7 +47,7 @@ public class CostCalculator
             }
             catch (Exception e)
             {
-                priceCache.put(rune.getItemId(), 0);
+                priceCache.put(rune.getItemId(), 0L);
             }
         }
 
@@ -65,7 +65,7 @@ public class CostCalculator
                     }
                     catch (Exception e)
                     {
-                        priceCache.put(preset.getOutputItemId(), 0);
+                        priceCache.put(preset.getOutputItemId(), 0L);
                     }
                 }
                 for (ConversionPreset.ItemInput input : preset.getInputs())
@@ -77,7 +77,7 @@ public class CostCalculator
                     }
                     catch (Exception e)
                     {
-                        priceCache.put(input.getItemId(), 0);
+                        priceCache.put(input.getItemId(), 0L);
                     }
                 }
             }
@@ -96,23 +96,23 @@ public class CostCalculator
         }
         catch (Exception e)
         {
-            priceCache.put(itemId, 0);
+            priceCache.put(itemId, 0L);
         }
     }
 
     /**
      * Returns the cached price, or 0 if not cached.
      */
-    public int getRunePrice(Rune rune)
+    public long getRunePrice(Rune rune)
     {
-        Integer cached = priceCache.get(rune.getItemId());
-        return cached != null ? cached : 0;
+        Long cached = priceCache.get(rune.getItemId());
+        return cached != null ? cached : 0L;
     }
 
-    public int getItemPrice(int itemId)
+    public long getItemPrice(int itemId)
     {
-        Integer cached = priceCache.get(itemId);
-        return cached != null ? cached : 0;
+        Long cached = priceCache.get(itemId);
+        return cached != null ? cached : 0L;
     }
 
     /**
@@ -139,7 +139,7 @@ public class CostCalculator
                 continue;
             }
 
-            int pricePerRune = getRunePrice(req.getRune());
+            long pricePerRune = getRunePrice(req.getRune());
             double saveChance = useGearSave
                 ? RuneSavingGear.getRuneSaveChance(req.getRune())
                 : 0.0;
@@ -169,7 +169,7 @@ public class CostCalculator
                 continue;
             }
 
-            int pricePerRune = getRunePrice(req.getRune());
+            long pricePerRune = getRunePrice(req.getRune());
             double saveChance = useGearSave
                 ? RuneSavingGear.getRuneSaveChance(req.getRune())
                 : 0.0;
@@ -207,7 +207,7 @@ public class CostCalculator
                 continue;
             }
 
-            int pricePerRune = getRunePrice(req.getRune());
+            long pricePerRune = getRunePrice(req.getRune());
             double saveChance = useGearSave
                 ? RuneSavingGear.getRuneSaveChance(req.getRune())
                 : 0.0;
@@ -244,14 +244,14 @@ public class CostCalculator
         long totalInputCost = 0;
         for (ConversionPreset.ItemInput input : preset.getInputs())
         {
-            totalInputCost += (long) getItemPrice(input.getItemId()) * input.getQuantity();
+            totalInputCost += getItemPrice(input.getItemId()) * input.getQuantity();
         }
 
         long outputValue = 0;
         boolean isXpOnly = preset.getOutputItemId() == -1;
         if (!isXpOnly)
         {
-            outputValue = (long) getItemPrice(preset.getOutputItemId()) * preset.getOutputQty();
+            outputValue = getItemPrice(preset.getOutputItemId()) * preset.getOutputQty();
         }
 
         long runeCost = calculateCastCost(spell, useGear);
