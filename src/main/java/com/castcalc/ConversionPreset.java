@@ -17,16 +17,43 @@ public class ConversionPreset
     private final String outputName;
     private final int outputQty;
     private final int extraGpCost;
+    /** Prayer XP per cast for reanimation presets; 0 for everything else. */
+    private final int prayerXp;
 
     public ConversionPreset(String label, int outputItemId, String outputName,
                             int outputQty, int extraGpCost, ItemInput... inputs)
+    {
+        this(label, outputItemId, outputName, outputQty, extraGpCost, 0, inputs);
+    }
+
+    private ConversionPreset(String label, int outputItemId, String outputName,
+                             int outputQty, int extraGpCost, int prayerXp, ItemInput... inputs)
     {
         this.label = label;
         this.outputItemId = outputItemId;
         this.outputName = outputName;
         this.outputQty = outputQty;
         this.extraGpCost = extraGpCost;
+        this.prayerXp = prayerXp;
         this.inputs = Arrays.asList(inputs);
+    }
+
+    /**
+     * A reanimation preset: 1 ensouled head in, Prayer XP out (no item).
+     * The label names the head ("Goblin head") and becomes the card header.
+     * headItemId must be the GE-tradeable variant (the ItemID constant with
+     * the numeric suffix, e.g. ENSOULED_GOBLIN_HEAD_13448); the unsuffixed
+     * constant is a different, untradeable item with no GE price.
+     */
+    private static ConversionPreset reanimate(String headName, int headItemId, int prayerXp)
+    {
+        return new ConversionPreset(headName, -1, "Prayer XP", 1, 0, prayerXp,
+            input(headItemId, "Ensouled head", 1));
+    }
+
+    public int getPrayerXp()
+    {
+        return prayerXp;
     }
 
     public String getLabel()
@@ -208,6 +235,26 @@ public class ConversionPreset
         );
 
         // =====================================================================
+        // CHARGE ORB — cast on the matching obelisk, 1 unpowered orb per cast
+        // =====================================================================
+        register("Charge Water Orb",
+            new ConversionPreset("Unpowered orb -> Water orb", ItemID.WATER_ORB,
+                "Water orb", 1, 0,
+                input(ItemID.UNPOWERED_ORB, "Unpowered orb", 1)));
+        register("Charge Earth Orb",
+            new ConversionPreset("Unpowered orb -> Earth orb", ItemID.EARTH_ORB,
+                "Earth orb", 1, 0,
+                input(ItemID.UNPOWERED_ORB, "Unpowered orb", 1)));
+        register("Charge Fire Orb",
+            new ConversionPreset("Unpowered orb -> Fire orb", ItemID.FIRE_ORB,
+                "Fire orb", 1, 0,
+                input(ItemID.UNPOWERED_ORB, "Unpowered orb", 1)));
+        register("Charge Air Orb",
+            new ConversionPreset("Unpowered orb -> Air orb", ItemID.AIR_ORB,
+                "Air orb", 1, 0,
+                input(ItemID.UNPOWERED_ORB, "Unpowered orb", 1)));
+
+        // =====================================================================
         // MAGIC TABLET MAKING (at lectern in Player-Owned House)
         // Each cast: 1 soft clay + spell runes \u2192 1 tablet
         // =====================================================================
@@ -217,6 +264,7 @@ public class ConversionPreset
         registerTabletSpell("Teleport to House", ItemID.TELEPORT_TO_HOUSE);
         registerTabletSpell("Camelot Teleport", ItemID.CAMELOT_TELEPORT);
         registerTabletSpell("Ardougne Teleport", ItemID.ARDOUGNE_TELEPORT);
+        registerTabletSpell("Civitas illa Fortis Teleport", ItemID.CIVITAS_ILLA_FORTIS_TELEPORT);
         registerTabletSpell("Watchtower Teleport", ItemID.WATCHTOWER_TELEPORT);
         registerTabletSpell("Kourend Castle Teleport", ItemID.KOUREND_CASTLE_TELEPORT);
         // No Trollheim entry: that tablet isn't made at a lectern (it's a house
@@ -243,80 +291,37 @@ public class ConversionPreset
         // Note: Teleport to Ape Atoll uses banana over standard recipe and isn't included.
 
         // =====================================================================
-        // REANIMATE SPELLS — ensouled head \u2192 prayer XP
+        // REANIMATION — 1 ensouled head per cast -> Prayer XP (no item out)
+        // Since 2021 there are only 4 reanimation spells; each head needs a
+        // specific tier. Data from the OSRS Wiki "Ensouled heads" table.
         // =====================================================================
-        register("Reanimate Goblin",
-            new ConversionPreset("Ensouled goblin head", -1,
-                "Prayer XP (130)", 1, 0,
-                input(ItemID.ENSOULED_GOBLIN_HEAD, "Ensouled goblin head", 1)));
-        register("Reanimate Monkey",
-            new ConversionPreset("Ensouled monkey head", -1,
-                "Prayer XP (182)", 1, 0,
-                input(ItemID.ENSOULED_MONKEY_HEAD, "Ensouled monkey head", 1)));
-        register("Reanimate Imp",
-            new ConversionPreset("Ensouled imp head", -1,
-                "Prayer XP (286)", 1, 0,
-                input(ItemID.ENSOULED_IMP_HEAD, "Ensouled imp head", 1)));
-        register("Reanimate Dog",
-            new ConversionPreset("Ensouled dog head", -1,
-                "Prayer XP (520)", 1, 0,
-                input(ItemID.ENSOULED_DOG_HEAD, "Ensouled dog head", 1)));
-        register("Reanimate Chaos Druid",
-            new ConversionPreset("Ensouled chaos druid head", -1,
-                "Prayer XP (584)", 1, 0,
-                input(ItemID.ENSOULED_CHAOS_DRUID_HEAD, "Ensouled chaos druid head", 1)));
-        register("Reanimate Giant",
-            new ConversionPreset("Ensouled giant head", -1,
-                "Prayer XP (650)", 1, 0,
-                input(ItemID.ENSOULED_GIANT_HEAD, "Ensouled giant head", 1)));
-        register("Reanimate Ogre",
-            new ConversionPreset("Ensouled ogre head", -1,
-                "Prayer XP (716)", 1, 0,
-                input(ItemID.ENSOULED_OGRE_HEAD, "Ensouled ogre head", 1)));
-        register("Reanimate Elf",
-            new ConversionPreset("Ensouled elf head", -1,
-                "Prayer XP (754)", 1, 0,
-                input(ItemID.ENSOULED_ELF_HEAD, "Ensouled elf head", 1)));
-        register("Reanimate Troll",
-            new ConversionPreset("Ensouled troll head", -1,
-                "Prayer XP (780)", 1, 0,
-                input(ItemID.ENSOULED_TROLL_HEAD, "Ensouled troll head", 1)));
-        register("Reanimate Horror",
-            new ConversionPreset("Ensouled horror head", -1,
-                "Prayer XP (832)", 1, 0,
-                input(ItemID.ENSOULED_HORROR_HEAD, "Ensouled horror head", 1)));
-        register("Reanimate Kalphite",
-            new ConversionPreset("Ensouled kalphite head", -1,
-                "Prayer XP (884)", 1, 0,
-                input(ItemID.ENSOULED_KALPHITE_HEAD, "Ensouled kalphite head", 1)));
-        register("Reanimate Dagannoth",
-            new ConversionPreset("Ensouled dagannoth head", -1,
-                "Prayer XP (936)", 1, 0,
-                input(ItemID.ENSOULED_DAGANNOTH_HEAD, "Ensouled dagannoth head", 1)));
-        register("Reanimate Bloodveld",
-            new ConversionPreset("Ensouled bloodveld head", -1,
-                "Prayer XP (1040)", 1, 0,
-                input(ItemID.ENSOULED_BLOODVELD_HEAD, "Ensouled bloodveld head", 1)));
-        register("Reanimate TzHaar",
-            new ConversionPreset("Ensouled tzhaar head", -1,
-                "Prayer XP (1104)", 1, 0,
-                input(ItemID.ENSOULED_TZHAAR_HEAD, "Ensouled tzhaar head", 1)));
-        register("Reanimate Demon",
-            new ConversionPreset("Ensouled demon head", -1,
-                "Prayer XP (1170)", 1, 0,
-                input(ItemID.ENSOULED_DEMON_HEAD, "Ensouled demon head", 1)));
-        register("Reanimate Aviansie",
-            new ConversionPreset("Ensouled aviansie head", -1,
-                "Prayer XP (1234)", 1, 0,
-                input(ItemID.ENSOULED_AVIANSIE_HEAD, "Ensouled aviansie head", 1)));
-        register("Reanimate Abyssal",
-            new ConversionPreset("Ensouled abyssal head", -1,
-                "Prayer XP (1300)", 1, 0,
-                input(ItemID.ENSOULED_ABYSSAL_HEAD, "Ensouled abyssal head", 1)));
-        register("Reanimate Dragon",
-            new ConversionPreset("Ensouled dragon head", -1,
-                "Prayer XP (1560)", 1, 0,
-                input(ItemID.ENSOULED_DRAGON_HEAD, "Ensouled dragon head", 1)));
+        register("Basic Reanimation",
+            reanimate("Goblin head", ItemID.ENSOULED_GOBLIN_HEAD_13448, 130),
+            reanimate("Monkey head", ItemID.ENSOULED_MONKEY_HEAD_13451, 182),
+            reanimate("Imp head", ItemID.ENSOULED_IMP_HEAD_13454, 286),
+            reanimate("Minotaur head", ItemID.ENSOULED_MINOTAUR_HEAD_13457, 364),
+            reanimate("Scorpion head", ItemID.ENSOULED_SCORPION_HEAD_13460, 454),
+            reanimate("Bear head", ItemID.ENSOULED_BEAR_HEAD_13463, 480),
+            reanimate("Unicorn head", ItemID.ENSOULED_UNICORN_HEAD_13466, 494));
+        register("Adept Reanimation",
+            reanimate("Dog head", ItemID.ENSOULED_DOG_HEAD_13469, 520),
+            reanimate("Chaos druid head", ItemID.ENSOULED_CHAOS_DRUID_HEAD_13472, 584),
+            reanimate("Giant head", ItemID.ENSOULED_GIANT_HEAD_13475, 650),
+            reanimate("Ogre head", ItemID.ENSOULED_OGRE_HEAD_13478, 716),
+            reanimate("Elf head", ItemID.ENSOULED_ELF_HEAD_13481, 754),
+            reanimate("Troll head", ItemID.ENSOULED_TROLL_HEAD_13484, 780),
+            reanimate("Horror head", ItemID.ENSOULED_HORROR_HEAD_13487, 832));
+        register("Expert Reanimation",
+            reanimate("Kalphite head", ItemID.ENSOULED_KALPHITE_HEAD_13490, 884),
+            reanimate("Dagannoth head", ItemID.ENSOULED_DAGANNOTH_HEAD_13493, 936),
+            reanimate("Bloodveld head", ItemID.ENSOULED_BLOODVELD_HEAD_13496, 1040),
+            reanimate("TzHaar head", ItemID.ENSOULED_TZHAAR_HEAD_13499, 1104),
+            reanimate("Demon head", ItemID.ENSOULED_DEMON_HEAD_13502, 1170),
+            reanimate("Hellhound head", ItemID.ENSOULED_HELLHOUND_HEAD_26997, 1200));
+        register("Master Reanimation",
+            reanimate("Aviansie head", ItemID.ENSOULED_AVIANSIE_HEAD_13505, 1234),
+            reanimate("Abyssal head", ItemID.ENSOULED_ABYSSAL_HEAD_13508, 1300),
+            reanimate("Dragon head", ItemID.ENSOULED_DRAGON_HEAD_13511, 1560));
     }
 
     private static void register(String spellName, ConversionPreset... presets)

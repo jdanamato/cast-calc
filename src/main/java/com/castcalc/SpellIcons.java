@@ -18,8 +18,8 @@ import java.util.Map;
  *
  * Notes on known missing constants:
  *   - Telegroup spells share sprites with their individual counterparts
- *   - Individual Reanimate spells were merged in 2021; individual SpriteID
- *     constants no longer exist — all fall back to SPELL_BASIC_REANIMATION
+ *   - Reanimation: only the 4 tier spells exist since 2021, each with its
+ *     own sprite (registered under ARCEUUS - UTILITY)
  *   - Resurrect variants: only SUPERIOR_SKELETON confirmed; others fall back
  *   - Battlefront Teleport: no constant exists in the version of RuneLite
  *     we target
@@ -57,6 +57,7 @@ public final class SpellIcons
         register("Fire Surge",        SpriteID.SPELL_FIRE_SURGE);
         register("Crumble Undead",    SpriteID.SPELL_CRUMBLE_UNDEAD);
         register("Iban Blast",        SpriteID.SPELL_IBAN_BLAST);
+        register("Magic Dart",        SpriteID.SPELL_MAGIC_DART);
         register("Saradomin Strike",  SpriteID.SPELL_SARADOMIN_STRIKE);
         register("Claws of Guthix",   SpriteID.SPELL_CLAWS_OF_GUTHIX);
         register("Flames of Zamorak", SpriteID.SPELL_FLAMES_OF_ZAMORAK);
@@ -73,6 +74,7 @@ public final class SpellIcons
         register("Bind",          SpriteID.SPELL_BIND);
         register("Snare",         SpriteID.SPELL_SNARE);
         register("Entangle",      SpriteID.SPELL_ENTANGLE);
+        register("Tele Block",    SpriteID.SPELL_TELE_BLOCK);
 
         // =====================================================================
         // STANDARD - UTILITY
@@ -83,6 +85,13 @@ public final class SpellIcons
         register("Bones to Bananas",    SpriteID.SPELL_BONES_TO_BANANAS);
         register("Bones to Peaches",    SpriteID.SPELL_BONES_TO_PEACHES);
         register("Charge",              SpriteID.SPELL_CHARGE);
+        register("Telekinetic Grab",    SpriteID.SPELL_TELEKINETIC_GRAB);
+        register("Charge Water Orb",    SpriteID.SPELL_CHARGE_WATER_ORB);
+        register("Charge Earth Orb",    SpriteID.SPELL_CHARGE_EARTH_ORB);
+        register("Charge Fire Orb",     SpriteID.SPELL_CHARGE_FIRE_ORB);
+        register("Charge Air Orb",      SpriteID.SPELL_CHARGE_AIR_ORB);
+        // Monster Inspect, Summon Boat and Teleport to Boat (Sailing, 2025):
+        // no SpriteID constant exists in RuneLite yet, so they show no icon.
 
         // =====================================================================
         // STANDARD - ENCHANTMENTS
@@ -106,6 +115,7 @@ public final class SpellIcons
         register("Teleport to House",       SpriteID.SPELL_TELEPORT_TO_HOUSE);
         register("Camelot Teleport",        SpriteID.SPELL_CAMELOT_TELEPORT);
         register("Ardougne Teleport",       SpriteID.SPELL_ARDOUGNE_TELEPORT);
+        register("Civitas illa Fortis Teleport", SpriteID.SPELL_CIVITAS_ILLA_FORTIS_TELEPORT);
         register("Watchtower Teleport",     SpriteID.SPELL_WATCHTOWER_TELEPORT);
         register("Trollheim Teleport",      SpriteID.SPELL_TROLLHEIM_TELEPORT);
         register("Kourend Castle Teleport", SpriteID.SPELL_TELEPORT_TO_KOUREND);
@@ -157,13 +167,19 @@ public final class SpellIcons
         register("Bake Pie",         SpriteID.SPELL_BAKE_PIE);
         register("Humidify",         SpriteID.SPELL_HUMIDIFY);
         register("Magic Imbue",      SpriteID.SPELL_MAGIC_IMBUE);
+        register("Geomancy",         SpriteID.SPELL_GEOMANCY);
+        register("Monster Examine",  SpriteID.SPELL_MONSTER_EXAMINE);
+        // Astral Contact was renamed from NPC Contact; the constant kept the old name.
+        register("Astral Contact",   SpriteID.SPELL_NPC_CONTACT);
+        register("Stat Spy",         SpriteID.SPELL_STAT_SPY);
+        register("Recharge Dragonstone", SpriteID.SPELL_RECHARGE_DRAGONSTONE);
+        register("Spellbook Swap",   SpriteID.SPELL_SPELLBOOK_SWAP);
         register("Hunter Kit",       SpriteID.SPELL_HUNTER_KIT);
         register("Fertile Soil",     SpriteID.SPELL_FERTILE_SOIL);
         register("Cure Plant",       SpriteID.SPELL_CURE_PLANT);
 
         // =====================================================================
         // LUNAR - SUPPORT
-        // Note: Vengeance Group has no SpriteID constant — falls back to blank.
         // =====================================================================
         register("Cure Other",             SpriteID.SPELL_CURE_OTHER);
         register("Cure Me",                SpriteID.SPELL_CURE_ME);
@@ -174,7 +190,6 @@ public final class SpellIcons
         register("Energy Transfer",        SpriteID.SPELL_ENERGY_TRANSFER);
         register("Vengeance Other",        SpriteID.SPELL_VENGEANCE_OTHER);
         register("Vengeance",              SpriteID.SPELL_VENGEANCE);
-        register("Vengeance Group",        SpriteID.SPELL_VENGEANCE); // no GROUP constant; reuse Vengeance sprite
         register("Boost Potion Share",     SpriteID.SPELL_BOOST_POTION_SHARE);
         register("Stat Restore Pot Share", SpriteID.SPELL_STAT_RESTORE_POT_SHARE);
 
@@ -212,30 +227,6 @@ public final class SpellIcons
         register("Greater Corruption", SpriteID.SPELL_GREATER_CORRUPTION);
 
         // =====================================================================
-        // ARCEUUS - REANIMATION
-        // Individual reanimate spell constants were removed when the spells were
-        // merged into 4 tiers in 2021. All fall back to SPELL_BASIC_REANIMATION.
-        // =====================================================================
-        register("Reanimate Goblin",      SpriteID.SPELL_BASIC_REANIMATION);
-        register("Reanimate Monkey",      SpriteID.SPELL_BASIC_REANIMATION);
-        register("Reanimate Imp",         SpriteID.SPELL_BASIC_REANIMATION);
-        register("Reanimate Dog",         SpriteID.SPELL_BASIC_REANIMATION);
-        register("Reanimate Chaos Druid", SpriteID.SPELL_BASIC_REANIMATION);
-        register("Reanimate Giant",       SpriteID.SPELL_ADEPT_REANIMATION);
-        register("Reanimate Ogre",        SpriteID.SPELL_ADEPT_REANIMATION);
-        register("Reanimate Elf",         SpriteID.SPELL_ADEPT_REANIMATION);
-        register("Reanimate Troll",       SpriteID.SPELL_ADEPT_REANIMATION);
-        register("Reanimate Horror",      SpriteID.SPELL_EXPERT_REANIMATION);
-        register("Reanimate Kalphite",    SpriteID.SPELL_EXPERT_REANIMATION);
-        register("Reanimate Dagannoth",   SpriteID.SPELL_EXPERT_REANIMATION);
-        register("Reanimate Bloodveld",   SpriteID.SPELL_EXPERT_REANIMATION);
-        register("Reanimate TzHaar",      SpriteID.SPELL_MASTER_REANIMATION);
-        register("Reanimate Demon",       SpriteID.SPELL_MASTER_REANIMATION);
-        register("Reanimate Aviansie",    SpriteID.SPELL_MASTER_REANIMATION);
-        register("Reanimate Abyssal",     SpriteID.SPELL_MASTER_REANIMATION);
-        register("Reanimate Dragon",      SpriteID.SPELL_MASTER_REANIMATION);
-
-        // =====================================================================
         // ARCEUUS - UTILITY
         // =====================================================================
         register("Basic Reanimation",  SpriteID.SPELL_BASIC_REANIMATION);
@@ -261,6 +252,9 @@ public final class SpellIcons
         register("Resurrect Greater Ghost",    SpriteID.SPELL_RESURRECT_GREATER_ZOMBIE);
         register("Resurrect Greater Skeleton", SpriteID.SPELL_RESURRECT_GREATER_ZOMBIE);
         register("Resurrect Greater Zombie",   SpriteID.SPELL_RESURRECT_GREATER_ZOMBIE);
+        register("Degrime",                    SpriteID.SPELL_DEGRIME);
+        register("Resurrect Crops",            SpriteID.SPELL_RESURRECT_CROPS);
+        register("Death Charge",               SpriteID.SPELL_DEATH_CHARGE);
 
         // =====================================================================
         // ARCEUUS - TELEPORTS

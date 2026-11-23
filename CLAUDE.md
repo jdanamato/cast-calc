@@ -193,7 +193,8 @@ these to recur:
   don't exist in the targeted RuneLite version — left uncommented/blank icon.
 - Only `SpriteID.SPELL_RESURRECT_SUPERIOR_SKELETON` is confirmed to exist among
   the 9 Resurrect spell variants — all 9 fall back to that one sprite.
-- `SpriteID.SPELL_VENGEANCE_GROUP` doesn't exist — reuses `SPELL_VENGEANCE`.
+- There is no Vengeance Group in OSRS (it's a RuneScape 3 spell); an entry for
+  it was removed. `scripts/check_spells.py` catches spells like this.
 
 **General lesson:** when adding new RuneLite `ItemID`/`SpriteID` references,
 expect ~15-20% to be wrong on first guess. Don't guess silently — build, read the

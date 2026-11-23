@@ -1494,7 +1494,10 @@ public class CastCalcPanel extends PluginPanel
         // Header row: shows what this conversion produces
         if (result.isXpOnly)
         {
-            JLabel header = new JLabel("Cast cost breakdown");
+            // XP-only presets (reanimation) produce no item, so the header names
+            // what goes in instead, e.g. "Goblin head". A tier spell like Basic
+            // Reanimation lists several heads, and this is what tells them apart.
+            JLabel header = new JLabel(preset.getLabel());
             header.setFont(detailBoldFont());
             header.setForeground(TEXT_PRIMARY);
             header.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -1536,8 +1539,18 @@ public class CastCalcPanel extends PluginPanel
 
         if (result.isXpOnly)
         {
-            // XP-only conversions (Reanimate spells): show total cost
+            // XP-only conversions (reanimation): total cost, the Prayer XP it
+            // gives, and cost per XP, which is how players compare heads.
             addLineItem(card, null, "Total cost", formatGp(result.totalCost()) + " gp", TEXT_HIGHLIGHT);
+            int prayerXp = preset.getPrayerXp();
+            if (prayerXp > 0)
+            {
+                addLineItem(card, null, "Prayer XP", formatGp(prayerXp), TEXT_PRIMARY);
+                String perXp = result.missingPrice
+                    ? "Unknown"
+                    : String.format("%.1f gp", result.totalCost() / (double) prayerXp);
+                addLineItem(card, null, "Cost per XP", perXp, result.missingPrice ? TEXT_MUTED : TEXT_HIGHLIGHT);
+            }
         }
         else
         {
