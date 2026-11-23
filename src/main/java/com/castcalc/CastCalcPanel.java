@@ -190,10 +190,8 @@ public class CastCalcPanel extends PluginPanel
         searchField.setToolTipText("Search spells...");
         searchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, INPUT_HEIGHT));
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        searchField.addKeyListener(new KeyAdapter()
-        {
-            @Override public void keyReleased(KeyEvent e) { refreshSpellList(); }
-        });
+        // React to text changes (typing, pasting, deleting), not key presses.
+        addDocumentListener(searchField, this::refreshSpellList);
         header.add(searchField);
         header.add(Box.createVerticalStrut(ELEMENT_GAP + 2));
 
@@ -1365,30 +1363,26 @@ public class CastCalcPanel extends PluginPanel
         resultsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         container.add(resultsPanel);
 
-        Timer debounceTimer = new Timer(400, null);
+        // Debounce: wait until the text has stopped changing for 400ms, then
+        // search once. The timer's action is attached exactly once, here;
+        // each text change only restarts the countdown.
+        Timer debounceTimer = new Timer(400, evt ->
+        {
+            String query = alchSearchField.getText().trim();
+            if (query.length() < 2)
+            {
+                resultsPanel.removeAll();
+                resultsPanel.revalidate();
+                resultsPanel.repaint();
+                return;
+            }
+            searchAndDisplayAlchItems(query, resultsPanel, isHighAlch);
+        });
         debounceTimer.setRepeats(false);
 
-        alchSearchField.addKeyListener(new KeyAdapter()
-        {
-            @Override
-            public void keyReleased(KeyEvent e)
-            {
-                debounceTimer.stop();
-                debounceTimer.addActionListener(evt ->
-                {
-                    String query = alchSearchField.getText().trim();
-                    if (query.length() < 2)
-                    {
-                        resultsPanel.removeAll();
-                        resultsPanel.revalidate();
-                        resultsPanel.repaint();
-                        return;
-                    }
-                    searchAndDisplayAlchItems(query, resultsPanel, isHighAlch);
-                });
-                debounceTimer.restart();
-            }
-        });
+        // Listen to the text itself (DocumentListener), not key presses, so
+        // pasting, deleting a selection, or any other edit also triggers a search.
+        addDocumentListener(alchSearchField, debounceTimer::restart);
     }
 
     private void searchAndDisplayAlchItems(String query, JPanel resultsPanel, boolean isHighAlch)
