@@ -46,6 +46,17 @@ It does not publish if `master` has unreleased feature commits since the
 published commit. Manage it at
 https://claude.ai/code/routines/trig_01G9sZ16fpzhtWcFSqmr2oYh
 
+A weekly GitHub Action, "Check spell data" (Thursdays 14:00 UTC, the day after
+the usual OSRS game update), compares `SpellDatabase.java` with the OSRS Wiki
+using `scripts/check_spells.py`. It's plain Python calling the wiki's API (no
+AI, no secrets). If a spell is missing, removed, or has a different level, XP
+or rune cost, it opens an issue titled "Spell data differs from the OSRS Wiki"
+(or updates the open one), and closes it once everything matches. Run it by
+hand from the repo's Actions tab, or locally with
+`python3 scripts/check_spells.py`. To leave a spell out on purpose, add it to
+`IGNORED` (wiki-only) or `PLUGIN_ONLY` (plugin-only) in the script, with the
+reason.
+
 To ship a fix or update by hand:
 
 1. Fix and build locally (`./gradlew clean build`), then push to `master`.
