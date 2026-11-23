@@ -212,7 +212,8 @@ public class ConversionPreset
         registerTabletSpell("Ardougne Teleport", ItemID.ARDOUGNE_TELEPORT);
         registerTabletSpell("Watchtower Teleport", ItemID.WATCHTOWER_TELEPORT);
         registerTabletSpell("Kourend Castle Teleport", ItemID.KOUREND_CASTLE_TELEPORT);
-        registerTabletSpell("Trollheim Teleport", ItemID.TROLLHEIM_TELEPORT);
+        // No Trollheim entry: that tablet isn't made at a lectern (it's a house
+        // tablet + Scroll of redirection) and is untradeable, so it has no GE price.
 
         // Ancient spellbook tablets (Mahogany Eagle lectern, Deathmatch unlock)
         registerTabletSpell("Paddewwa Teleport", ItemID.PADDEWWA_TELEPORT);

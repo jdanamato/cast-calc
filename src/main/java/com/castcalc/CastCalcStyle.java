@@ -42,7 +42,7 @@ public final class CastCalcStyle
     public static final Color TEXT_PROFIT_TAG  = ColorScheme.TEXT_COLOR; // for P&L subtitle
 
     public static final Color PROFIT           = ColorScheme.GRAND_EXCHANGE_PRICE;
-    public static final Color LOSS             = ColorScheme.GRAND_EXCHANGE_ALCH;
+    public static final Color LOSS             = ColorScheme.PROGRESS_ERROR_COLOR;
     public static final Color COST_PL          = ColorScheme.GRAND_EXCHANGE_PRICE;
 
     // TYPOGRAPHY

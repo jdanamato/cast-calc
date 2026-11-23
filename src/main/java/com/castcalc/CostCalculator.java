@@ -241,24 +241,33 @@ public class CostCalculator
     public PresetResult calculatePresetProfit(SpellData spell, ConversionPreset preset,
                                               boolean useGear)
     {
+        // A price of 0 means "unknown" (untradeable, or prices not loaded yet),
+        // not "worthless". Track it so the UI can say so instead of showing a
+        // made-up profit/loss figure.
+        boolean missingPrice = false;
+
         long totalInputCost = 0;
         for (ConversionPreset.ItemInput input : preset.getInputs())
         {
-            totalInputCost += getItemPrice(input.getItemId()) * input.getQuantity();
+            long price = getItemPrice(input.getItemId());
+            if (price <= 0) missingPrice = true;
+            totalInputCost += price * input.getQuantity();
         }
 
         long outputValue = 0;
         boolean isXpOnly = preset.getOutputItemId() == -1;
         if (!isXpOnly)
         {
-            outputValue = getItemPrice(preset.getOutputItemId()) * preset.getOutputQty();
+            long price = getItemPrice(preset.getOutputItemId());
+            if (price <= 0) missingPrice = true;
+            outputValue = price * preset.getOutputQty();
         }
 
         long runeCost = calculateCastCost(spell, useGear);
         long profit = outputValue - totalInputCost - runeCost - preset.getExtraGpCost();
 
         return new PresetResult(totalInputCost, outputValue, runeCost,
-            preset.getExtraGpCost(), profit, isXpOnly);
+            preset.getExtraGpCost(), profit, isXpOnly, missingPrice);
     }
 
     public static class PresetResult
@@ -269,9 +278,11 @@ public class CostCalculator
         public final long extraFee;
         public final long profit;
         public final boolean isXpOnly;
+        /** True if an input or output item had no GE price, so profit isn't trustworthy. */
+        public final boolean missingPrice;
 
         public PresetResult(long inputCost, long outputValue, long runeCost,
-                            long extraFee, long profit, boolean isXpOnly)
+                            long extraFee, long profit, boolean isXpOnly, boolean missingPrice)
         {
             this.inputCost = inputCost;
             this.outputValue = outputValue;
@@ -279,6 +290,7 @@ public class CostCalculator
             this.extraFee = extraFee;
             this.profit = profit;
             this.isXpOnly = isXpOnly;
+            this.missingPrice = missingPrice;
         }
 
         public long totalCost()

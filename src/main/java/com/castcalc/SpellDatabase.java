@@ -98,7 +98,7 @@ public final class SpellDatabase
         addSpell("Camelot Teleport",        STANDARD, TELEPORT, 45, true,  55.5, XpMode.NORMAL, rune(AIR, 5), rune(LAW, 1));
         addSpell("Ardougne Teleport",       STANDARD, TELEPORT, 51, true,  61,   XpMode.NORMAL, rune(WATER, 2), rune(LAW, 2));
         addSpell("Watchtower Teleport",     STANDARD, TELEPORT, 58, true,  68,   XpMode.NORMAL, rune(EARTH, 2), rune(LAW, 2));
-        addSpell("Trollheim Teleport",      STANDARD, TELEPORT, 61, true,  68,   XpMode.NORMAL, rune(FIRE, 2), rune(LAW, 2));
+        addSpell("Trollheim Teleport",      STANDARD, TELEPORT, 61, false, 68,   XpMode.NORMAL, rune(FIRE, 2), rune(LAW, 2));
         addSpell("Kourend Castle Teleport", STANDARD, TELEPORT, 69, true,  82,   XpMode.NORMAL, rune(FIRE, 5), rune(WATER, 4), rune(SOUL, 2), rune(LAW, 2));
         addSpell("Teleother Lumbridge",     STANDARD, TELEPORT, 74, false, 84,   XpMode.NORMAL, rune(EARTH, 1), rune(LAW, 1), rune(SOUL, 1));
         addSpell("Teleother Falador",       STANDARD, TELEPORT, 82, false, 92,   XpMode.NORMAL, rune(WATER, 1), rune(LAW, 1), rune(SOUL, 1));

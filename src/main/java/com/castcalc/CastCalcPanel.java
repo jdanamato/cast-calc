@@ -1478,7 +1478,7 @@ public class CastCalcPanel extends PluginPanel
         {
             long itemPrice = calculator.getItemPrice(input.getItemId()) * input.getQuantity();
             JLabel itemIcon = buildItemIconLabel(input.getItemId());
-            addItemLineItem(card, itemIcon, input.getName(), input.getQuantity(), formatGp(itemPrice) + " gp", TEXT_MUTED);
+            addItemLineItem(card, itemIcon, input.getName(), input.getQuantity(), priceText(itemPrice), TEXT_MUTED);
         }
 
         // Runes row (no icon since runes are aggregated across types)
@@ -1509,13 +1509,22 @@ public class CastCalcPanel extends PluginPanel
         {
             // Output value (with output item icon)
             JLabel outputIcon = buildItemIconLabel(preset.getOutputItemId());
-            addItemLineItem(card, outputIcon, preset.getOutputName(), preset.getOutputQty(), formatGp(result.outputValue) + " gp", TEXT_PRIMARY);
+            addItemLineItem(card, outputIcon, preset.getOutputName(), preset.getOutputQty(), priceText(result.outputValue), TEXT_PRIMARY);
 
-            // Profit row — colored green or red, no icon
+            // Profit row — colored green or red, no icon. If any item had no GE
+            // price, the math would treat it as 0 gp and show a fake figure, so
+            // say "Unknown" instead.
             card.add(Box.createVerticalStrut(2));
-            String profitText = (result.profit >= 0 ? "+" : "") + formatGp(result.profit) + " gp";
-            Color profitColor = result.profit >= 0 ? PROFIT : LOSS;
-            addLineItem(card, null, "Profit", profitText, profitColor);
+            if (result.missingPrice)
+            {
+                addLineItem(card, null, "Profit", "Unknown", TEXT_MUTED);
+            }
+            else
+            {
+                String profitText = (result.profit >= 0 ? "+" : "") + formatGp(result.profit) + " gp";
+                Color profitColor = result.profit >= 0 ? PROFIT : LOSS;
+                addLineItem(card, null, "Profit", profitText, profitColor);
+            }
         }
 
         container.add(card);
@@ -1678,11 +1687,18 @@ public class CastCalcPanel extends PluginPanel
             {
                 CostCalculator.PresetResult result = calculator.calculatePresetProfit(spell, preset, useGear);
                 if (result.isXpOnly) continue; // Reanimation etc. have no profit value
+                if (result.missingPrice) continue; // Unknown profit; don't sort on a fake number
                 if (result.profit > best) best = result.profit;
             }
             catch (Exception ignored) {}
         }
         return best;
+    }
+
+    /** "1,234 gp", or "No GE price" for 0 (0 means the price is unknown, not free). */
+    private static String priceText(long amount)
+    {
+        return amount > 0 ? formatGp(amount) + " gp" : "No GE price";
     }
 
     private static String formatGp(long amount)
