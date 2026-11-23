@@ -563,11 +563,8 @@ public class CastCalcPanel extends PluginPanel
                     String label = spell.getXpMode().getMutedLabel();
                     return label != null ? label : "-";
                 }
-                long targetXp = parseTargetXp();
-                long currentXp = MagicXpTable.xpForLevel(currentMagicLevel);
-                if (targetXp <= currentXp || spell.getXpPerCast() <= 0)
-                    return formatGp(costPerCast) + " gp";
-                long castsNeeded = (long) Math.ceil((targetXp - currentXp) / spell.getXpPerCast());
+                long castsNeeded = castsToTarget(spell);
+                if (castsNeeded <= 0) return formatGp(costPerCast) + " gp";
                 return formatGp(costPerCast * castsNeeded) + " gp";
             }
             case COST:
@@ -580,6 +577,51 @@ public class CastCalcPanel extends PluginPanel
             default:
                 return formatGp(costPerCast) + " gp";
         }
+    }
+
+    /**
+     * Level mode: casts needed to go from the player's current level to the
+     * target. Returns 0 when there's no valid target above the current level,
+     * or the spell's XP isn't calculable.
+     */
+    private long castsToTarget(SpellData spell)
+    {
+        if (!spell.getXpMode().isCalculable() || spell.getXpPerCast() <= 0) return 0;
+        long targetXp = parseTargetXp();
+        long currentXp = MagicXpTable.xpForLevel(currentMagicLevel);
+        if (targetXp <= currentXp) return 0;
+        return (long) Math.ceil((targetXp - currentXp) / spell.getXpPerCast());
+    }
+
+    /**
+     * The number the Cost sorts compare: whatever GP figure the row's right
+     * column shows. Normally that's cost per cast; in Level mode with a target
+     * set it's the total GP to reach the target, so "Cost (low)" puts the
+     * cheapest route to the goal first. Returns Long.MAX_VALUE for rows with no
+     * comparable cost (muted Level-mode spells, failed lookups).
+     *
+     * Casts and Cost modes don't need special handling: total = per-cast x a
+     * fixed number, and casts affordable = budget / per-cast, so sorting by
+     * per-cast cost already matches what those rows show.
+     */
+    private long sortCost(SpellData spell, boolean useGear)
+    {
+        long perCast = safeCost(spell, useGear);
+        if (!calcVisible || calcMode != CalcMode.LEVEL || perCast == Long.MAX_VALUE) return perCast;
+        if (!spell.getXpMode().isCalculable()) return Long.MAX_VALUE;
+        long casts = castsToTarget(spell);
+        return casts > 0 ? perCast * casts : perCast;
+    }
+
+    /** Cost-sort comparator. Rows with no comparable cost always go last. */
+    private int compareCost(SpellData a, SpellData b, boolean useGear, boolean ascending)
+    {
+        long ca = sortCost(a, useGear);
+        long cb = sortCost(b, useGear);
+        boolean aNone = ca == Long.MAX_VALUE;
+        boolean bNone = cb == Long.MAX_VALUE;
+        if (aNone != bNone) return aNone ? 1 : -1;
+        return ascending ? Long.compare(ca, cb) : Long.compare(cb, ca);
     }
 
     /** Returns the right-column text color for a spell row in calc mode. */
@@ -610,10 +652,8 @@ public class CastCalcPanel extends PluginPanel
             case LEVEL:
             {
                 if (!spell.getXpMode().isCalculable()) return null;
-                long targetXp = parseTargetXp();
-                long currentXp = MagicXpTable.xpForLevel(currentMagicLevel);
-                if (targetXp <= currentXp || spell.getXpPerCast() <= 0) return null;
-                long castsNeeded = (long) Math.ceil((targetXp - currentXp) / spell.getXpPerCast());
+                long castsNeeded = castsToTarget(spell);
+                if (castsNeeded <= 0) return null;
                 return formatCasts(castsNeeded) + " casts";
             }
             case COST:
@@ -732,10 +772,10 @@ public class CastCalcPanel extends PluginPanel
         switch (currentSort)
         {
             case "Cost (low)":
-                filtered.sort((a, b) -> Long.compare(safeCost(a, useGear), safeCost(b, useGear)));
+                filtered.sort((a, b) -> compareCost(a, b, useGear, true));
                 break;
             case "Cost (high)":
-                filtered.sort((a, b) -> Long.compare(safeCost(b, useGear), safeCost(a, useGear)));
+                filtered.sort((a, b) -> compareCost(a, b, useGear, false));
                 break;
             case "Level (low)":
                 filtered.sort((a, b) -> Integer.compare(a.getLevelRequired(), b.getLevelRequired()));

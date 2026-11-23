@@ -97,22 +97,29 @@ public class ConversionPreset
 
     static
     {
+        // Input names are shown on a narrow P&L line where only ~72px of text
+        // fits (about 11 characters) before Swing cuts it off with "...". Keep
+        // them short enough that an input and its output don't truncate to the
+        // same prefix (e.g. "Green hide", not "Green dragonhide" next to
+        // "Green dragon leather"). The output name also titles the card, so it
+        // keeps the full in-game name.
+
         // =====================================================================
         // TAN LEATHER — tans 5 hides per cast
         // =====================================================================
         register("Tan Leather",
             new ConversionPreset("Green d'hide \u2192 Leather", ItemID.GREEN_DRAGON_LEATHER,
                 "Green dragon leather", 5, 0,
-                input(ItemID.GREEN_DRAGONHIDE, "Green dragonhide", 5)),
+                input(ItemID.GREEN_DRAGONHIDE, "Green hide", 5)),
             new ConversionPreset("Blue d'hide \u2192 Leather", ItemID.BLUE_DRAGON_LEATHER,
                 "Blue dragon leather", 5, 0,
-                input(ItemID.BLUE_DRAGONHIDE, "Blue dragonhide", 5)),
+                input(ItemID.BLUE_DRAGONHIDE, "Blue hide", 5)),
             new ConversionPreset("Red d'hide \u2192 Leather", ItemID.RED_DRAGON_LEATHER,
                 "Red dragon leather", 5, 0,
-                input(ItemID.RED_DRAGONHIDE, "Red dragonhide", 5)),
+                input(ItemID.RED_DRAGONHIDE, "Red hide", 5)),
             new ConversionPreset("Black d'hide \u2192 Leather", ItemID.BLACK_DRAGON_LEATHER,
                 "Black dragon leather", 5, 0,
-                input(ItemID.BLACK_DRAGONHIDE, "Black dragonhide", 5))
+                input(ItemID.BLACK_DRAGONHIDE, "Black hide", 5))
         );
 
         // =====================================================================
@@ -130,7 +137,7 @@ public class ConversionPreset
                 input(ItemID.TEAK_LOGS, "Teak logs", 1)),
             new ConversionPreset("Mahogany logs \u2192 Mahogany plank", ItemID.MAHOGANY_PLANK,
                 "Mahogany plank", 1, 1050,
-                input(ItemID.MAHOGANY_LOGS, "Mahogany logs", 1))
+                input(ItemID.MAHOGANY_LOGS, "Mahog. logs", 1))
         );
 
         // =====================================================================
@@ -160,7 +167,7 @@ public class ConversionPreset
                 input(ItemID.COAL, "Coal", 4)),
             new ConversionPreset("Adamantite (addy ore + 6 coal)", ItemID.ADAMANTITE_BAR,
                 "Adamantite bar", 1, 0,
-                input(ItemID.ADAMANTITE_ORE, "Adamantite ore", 1),
+                input(ItemID.ADAMANTITE_ORE, "Addy ore", 1),
                 input(ItemID.COAL, "Coal", 6)),
             new ConversionPreset("Runite (rune ore + 8 coal)", ItemID.RUNITE_BAR,
                 "Runite bar", 1, 0,
